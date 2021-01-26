@@ -1,0 +1,68 @@
+{% extends 'pizza_app/base.html' %}
+
+{% block title %}Pizza Express ~ Orders ~ #{{order.pk}} ~ Django{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<section class="single-order-page">
+<div class="order-wrapper">
+    <div style="display:flex;">
+   <p style="font-size:32px;">Order #{{order.pk}}</p>
+    {% if order.order_status == "pending" %}
+        <p style="background-color:yellow; border-radius:25px; height:20%; padding:25px; margin-left:20px;">{{order.order_status}}</p>
+    {% elif order.order_status == "Accepted" %}
+        <p style="background-color:Green; border-radius:25px; height:20%; padding:25px; margin-left:20px;">{{order.order_status}}</p>
+
+    {% elif order.order_status == "Fulfilled" %}
+        <p style="background-color:Green; border-radius:25px; height:20%; padding:25px; margin-left:20px;">{{order.order_status}}</p>
+    {% elif order.order_status == "Refunded" %}
+        <p style="background-color:Gray; border-radius:25px; height:20%; padding:25px; margin-left:20px;">{{order.order_status}}</p>
+    {% else %}
+        <p style="background-color:Orange; border-radius:25px; height:20%; padding:25px; margin-left:20px;">{{order.order_status}}</p>
+    {% endif %}
+
+
+    </div>
+   <div>
+       <div style="display:flex; height:50px; border:1px solid black; justify-content:space-between;">
+           <img src="{% static 'pizza_app/img/ingredients.png' %}" alt="">
+           <div>
+               <p>{{order.pizzas}}</p>
+           </div>
+           <div>
+                <p>{{order.total_price}}kr.</p>
+            </div>
+
+       </div>
+   </div>
+
+   <div style="padding:25px;">
+    <form method="POST">
+
+    {% csrf_token %}
+
+    <input type="hidden" name="order_pk" value="{{order.pk}}" />
+
+    {% if order.order_status == "pending" %}
+        <button formaction="{% url 'pizza_app:accept_order' %}">Accept Order</button>
+    {% elif order.order_status == "Accepted" %}
+       <button formaction="{% url 'pizza_app:fulfill_order' %}">Mark As Fulfilled</button>
+    {% endif %}
+
+    </form>
+   </div>
+
+</div>
+<style>
+
+    .order-wrapper {
+        max-width:1000px;
+        width:100%;
+        margin: 40px auto;
+    }
+
+</style>
+</section>
+
+{% endblock %}

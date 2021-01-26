@@ -157,3 +157,46 @@ def create_order(request):
         'userProfiles': userProfiles,
     }
     return render(request, 'pizza_app/edit_pizza.html', context)
+
+
+# Admin/Orders Page
+@login_required
+def orders_page(request):
+
+    orders = Order.objects.all()
+
+    context = {
+        'orders' : orders
+    }
+
+    return render(request, 'pizza_app/orders.html', context)
+
+# Admin/Orders/<int:pk> Page (SINGLE order page)
+@login_required
+def single_order(request, pk):
+
+    order = get_object_or_404(Order, pk=pk)
+
+    # context = {
+    #     'order': order,
+    # }
+
+    return render(request, 'pizza_app/single_order.html', {"order":order})
+
+def accept_order(request):
+    order_pk = request.POST['order_pk']
+    order = get_object_or_404(Order, pk=order_pk)
+    order.order_status = "Accepted"
+    order.save()
+
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+def fulfill_order(request):
+    order_pk = request.POST['order_pk']
+    order = get_object_or_404(Order, pk=order_pk)
+    order.order_status = "Fulfilled"
+    order.save()
+
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+# Update Pizza
