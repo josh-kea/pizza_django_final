@@ -1,0 +1,30 @@
+{% extends 'pizza_app/base.html' %}
+
+{% block title %}THANK YOU{% endblock %}
+
+{% block content %}
+<div class="order-wrapper">
+
+<h1 class="order-number">Your order number: #{{ order.pk }}</h1>
+
+<p>Your <b>{{order.pizzas}}</b> is on the way!</p>
+ <p>Thanks for placing an order with us! Your order will arrive at: {{ order.delivery_date_time}}</p>
+ <p>Total paid: {{order.total_price}} kr</p>
+<h2>Order Status:</h2>
+<p style="color:#746b60;">{{order.order_status }}</p>
+<a class="home-btn" href="{% url 'pizza_app:customer_page' %}">Go back to home page</a>
+</div>
+
+<style>
+    .order-wrapper {
+        max-width:1000px;
+        margin:0 auto;
+        text-align:center;
+        margin-top:80px;
+    }
+
+
+</style>
+
+
+{% endblock %}

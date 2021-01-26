@@ -1,0 +1,277 @@
+html {
+  background-color:#FAF3EC;
+}
+
+body {
+  margin: 0;
+  
+}
+h1 {
+  color: black;
+  font-size: 3em;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.employe_page{
+
+  background-size: cover;
+  padding-top: 20px;
+  width: 100%;
+  height: 1200px;
+  background-repeat: no-repeat;
+  text-align: center;
+}
+
+.user_page .employe_page {
+  background-size: cover;
+  padding-top: 20px;
+  width: 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+
+.img_container{
+  background-image: url("/static/login_app/img/pizza.png");
+  background-size: 100%, 100%;
+  float: right;
+  width: 59%;
+  height: 100%;
+  padding-top: 30px;
+  background-repeat: no-repeat;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+h2{
+  color: black;
+}
+
+input[type="text"],
+[type="password"],
+[type="email"],
+[type="phone"],
+[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+.login a,
+.password a {
+  font-size: 1em;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+input[type="submit"] {
+  background-color: transparent !important;
+  border:1px solid black;
+  border-radius: 20px;
+  margin-top: 20px;
+  width: 30%;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color:black !important;
+  transition: background-color 0.3s ease-in-out;
+  color:white;
+}
+
+.button{
+  background-color: transparent !important;
+  border:1px solid black;
+  border-radius: 20px;
+  margin-top: 20px;
+  width: 30%;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.button:hover {
+  background-color:black !important;
+  transition: background-color 0.3s ease-in-out;
+  color:white;
+}
+
+
+/* new sstyling */
+
+.profile-details-btn {
+  text-align:center;
+  margin:0 auto;
+  display:block;
+  font-size:10px;
+}
+
+.greeting-text {
+  text-align:center;
+}
+
+.pizzas-bg {
+  background-color:#FFFBF6;
+  padding-top:40px;
+  padding-bottom:40px;
+}
+p {
+  font-family: 'Montserrat', sans-serif;
+}
+.pizzas-wrapper {
+max-width:1000px;
+margin: 0 auto;
+display:grid;
+grid-template-columns: 1fr 1fr;
+grid-column-gap:40px;
+}
+
+.hero-wrapper {
+max-width:1000px;
+margin:0 auto;
+display:grid;
+grid-template-columns: 1fr 1fr;
+}
+
+.hero-img {
+width:70%;
+display:block;
+margin:0 auto;
+}
+
+.hero-header{
+font-size:86px;
+line-height:90px;
+font-family: 'Cardo', serif;
+font-weight:400;
+}
+
+.pizza-name {
+font-family: 'Cardo', serif;
+margin-bottom: 1rem;
+font-weight:400 !important;
+}
+
+.pizza-text {
+color:#746b60;
+line-height:1.5em;
+height:3em;
+overflow:hidden;
+text-overflow: ellipsis !important;
+}
+
+.pizza-content {
+display:grid;
+grid-template-columns:1fr 0.5fr;
+}
+
+.pizza-img { 
+width:100%;
+}
+
+.pizza-img img {
+width:60%;
+display:block;
+margin-left:auto;
+
+}
+
+.user_page {
+background-color:#FAF3EC;
+
+}
+
+.pizza-block {
+padding:20px;
+border-bottom:1px solid #746b605e;
+}
+
+.pizza-block:hover {
+box-shadow: 10px 10px 25px rgba(0,0,0,.14);
+transition: box-shadow .3s ease-in-out;
+cursor:pointer;
+}
+
+.pizza-block:hover .pizza-name {
+text-decoration:underline;
+}
+
+
+/*  Edit pizza style  */ 
+
+
+.edit_pizza{
+  padding-top: 30px;
+  margin:0 auto;
+  width:40%;
+}
+
+h1{
+  font-family: 'Cardo', serif;
+  margin-bottom: 1rem;
+  font-weight:400 !important;
+}
+
+.new_pizza_container{
+  padding-bottom: 40px;
+  margin-right: 19%;
+  margin-left: 19%;
+}
+
+.home-btn {
+  text-align:center;
+  margin:0 auto;
+  display:block;
+  font-size:10px;
+  color: black;
+  text-decoration: none;
+}
+
+
+.white_line{
+  border-bottom: 2px solid white;
+
+}
+
+.pizza-content2 {
+  display:grid;
+  grid-template-columns:1fr 0.5fr;
+  padding-left: 19%;
+  padding-right: 19%;
+  padding-bottom: 40px;
+  }
+
+.edit-pizza-btn{
+  background-color: transparent !important;
+  border:1px solid black;
+  border-radius: 20px;
+  margin-top: 20px;
+  width: 30%;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.edit-pizza-btn:hover {
+  background-color:black !important;
+  transition: background-color 0.3s ease-in-out;
+  color:white;
+}

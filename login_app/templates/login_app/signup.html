@@ -1,0 +1,25 @@
+{% extends 'login_app/base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+
+<section class="signup">
+  <div class="signup_container">
+    <h1>Sign Up</h1>
+    <hr />
+    <form action="{% url 'login_app:signup' %}" method="POST">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="User Name" />
+      <input type="password" name="password" placeholder="Password" />
+      <input type="password" name="confirm_password" placeholder="Confirm Password" />
+      <input type="email" name="email" placeholder="Email Address" />
+      <input type="phone" name="telephone_number" placeholder="Telephone number" />
+      <br>
+      <input type="submit" value="Sign Up" />
+    </form>
+  </div>
+</section>
+</body>
+
+{% endblock %}

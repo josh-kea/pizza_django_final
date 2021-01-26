@@ -1,0 +1,28 @@
+{% extends 'pizza_app/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{%block content %}
+<h1>Edit User</h1>
+
+
+<form method="POST">
+
+
+    {% for customer in customers %}
+    <h2>Helloooooo {{ customer.username }}. {{ customer.email }}
+        {% for profile in profiles %}
+        {{ profile.user_status }}</h2>
+    {% endfor %}
+    {% endfor %}
+
+
+</form>
+<hr />
+<a href="{% url 'pizza_app:employee_page' %}">Home</a>
+
+
+</body>
+
+</html>
+{% endblock %}

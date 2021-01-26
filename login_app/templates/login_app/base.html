@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'login_app/style.css' %}" media="screen" />
+  <link href="https://fonts.googleapis.com/css2?family=Cardo&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+  <nav class="topnav">
+    <h1 class="shop-name" style="color:black;">Pizza Express</h1>
+    {% if user.is_authenticated%}
+    <a class="btn" href="{% url 'pizza_app:customer_page' %}">Home</a>
+    {% else %}
+    <a class="btn" href="{% url 'login_app:login' %}">Home</a>
+    <a class="btn" href="{% url 'login_app:signup' %}">Sign up</a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <a class="nav-link2" href="{% url 'login_app:logout' %}">Log out <span data-feather="log-out"></a>
+    {% else %}
+    <a class="nav-link2" href="{% url 'login_app:login' %}">Log in <span data-feather="log-in"></a>
+    {% endif %}
+  </nav>
+
+  {% block content %} {% endblock %} {% block footer %} {% endblock %}
+</body>
+
+
+<style>
+  .topbar {
+    border-bottom:1px solid black;
+    text-align:center;
+    font-family: 'Montserrat', sans-serif;
+    padding-top:10px;
+    padding-bottom:10px;
+    font-size:12px;
+  }
+
+  .topnav a {
+    color:black;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    margin-left:10px;
+
+  }
+
+  .topnav a:hover {
+    text-decoration:underline !important;
+  }
+
+  .topnav {
+    display:flex !important;
+    padding-left:40px;
+    padding-right:40px;
+    border-bottom:2px solid white;
+  }
+
+  .shop-name {
+    font-size:30px;
+    font-family: 'Cardo', serif;
+    padding:0;
+    margin-right:20px;
+  }
+
+  .topnav img {
+    width:40px;
+    height:40px;
+  }
+</style>
+
+</html>
+

@@ -1,0 +1,108 @@
+body {
+  background-color: #FAF3EC;
+  margin: 0;
+  overflow: hidden;
+}
+h1 {
+  color: black;
+  font-size: 3em;
+  font-family: 'Cardo', serif;
+}
+
+
+
+.login,
+.signup,
+.password {
+
+  background-size: cover;
+  padding-top: 20px;
+  width: 100%;
+  height: 1000px;
+  background-repeat: no-repeat;
+}
+
+.signup_container{
+  padding-top: 140px;
+  text-align: center;
+}
+
+.signup_container input[type="text"],
+.signup_container [type="password"],
+.signup_container [type="email"],
+.signup_container [type="phone"],
+.signup_container select,
+.signup_container textarea {
+  width: 50%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+  resize: vertical;
+}
+
+.img_container{
+
+  background-size: 100%, 100%;
+  float: right;
+  width: 59%;
+  height: 100%;
+  background-repeat: no-repeat;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.login_container{
+  padding-top: 30px;
+  margin:0 auto;
+  width:40%;
+  
+  padding-left: 30px;
+}
+
+
+input[type="text"],
+[type="password"],
+[type="email"],
+[type="phone"],
+select,
+textarea {
+  width: 80%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+.login a,
+.password a {
+  font-size: 1em;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+input[type="submit"] {
+  background-color: transparent !important;
+  border:1px solid black;
+  border-radius: 20px;
+  margin-top: 20px;
+  width: 30%;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color:black !important;
+  transition: background-color 0.3s ease-in-out;
+  color:white;
+}

@@ -1,0 +1,33 @@
+{% extends 'pizza_app/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="edit_pizza">
+  <h1>Edit Pizza</h1>
+
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="pizza_id" value="{{pizza.pizza_id}}" placeholder="{{pizza.pizza_id}}" />
+    <label for="lname">Pizza name:</label><br>
+    <input type="text" name="pizza_name" value="{{pizza.name}}" placeholder="{{pizza.name}}" /> <br>
+    <label for="lname">Pizza description:</label><br>
+    <textarea type="text" name="pizza_text" value="{{pizza.text}}" placeholder="{{pizza.text}}"></textarea> <br>
+    <label for="lname">Pizza Price:</label><br>
+    <input type="number" name="pizza_price" value="{{pizza.price}}" placeholder="{{pizza.price}}" /><br><br>
+
+    <button class="button" formaction="{% url 'pizza_app:delete_pizza' %}">Delete pizza</button>
+    <button class="button" formaction="{% url 'pizza_app:update_pizza' %}">Update pizza</button>
+
+    <input type="hidden" name="pizza_id" value="{{pizza.pizza_id}}">
+
+  </form>
+  <hr />
+  <a class="home-btn" href="{% url 'pizza_app:employee_page' %}">Home</a>
+
+</section>
+</body>
+
+</html>
+{% endblock %}

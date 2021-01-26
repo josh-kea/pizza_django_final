@@ -1,0 +1,184 @@
+{% extends 'pizza_app/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="user_page">
+    {% csrf_token %}
+    <div class="menu_container">
+
+        {% load static %}
+
+        {% for userProfile in userProfiles %}
+        <p class="greeting-text">Hello <b>{{ user.username }}</b> ({{ userProfile.user_status }})</p>
+        <a class="profile-details-btn" style="color:black;" href="{% url 'pizza_app:user_profile' %}"
+            style="color:white !important">View Profile Details</a>
+        {% endfor%}
+
+        <form action="">
+
+        </form>
+        <div class="hero-wrapper">
+            <div>
+                <h1 class="hero-header">Traditional fresh pizza since 2020.</h1>
+            </div>
+            <div style="width:100%;">
+                <img class="hero-img" src="{% static 'pizza_app/img/ingredients.png' %}" alt="">
+            </div>
+        </div>
+        <div class="pizzas-bg">
+            <div class="pizzas-wrapper">
+
+
+                {% for pizza in pizzas %}
+                <form method="POST" class="pizza-block">
+                    {% csrf_token %}
+                    <input type="hidden" name="pizza_id" value="{{pizza.pk}}" />
+                    <input type="hidden" name="pizza_price" value="{{pizza.price}}" />
+                    <input type="hidden" name="pizza_name" value="{{pizza.name}}" />
+
+                    <div class="pizza-content">
+                        <div>
+                            <h2 class="pizza-name">{{ pizza.name }}</h2>
+                            <p>{{ pizza.price }} kr.</p>
+                            <p class="pizza-text">{{ pizza.text }}</p>
+
+                        </div>
+                        <div class="pizza-img">
+                            <img src="//s3-eu-west-1.amazonaws.com/plantjammerbackend1/__sized__/pizzamexican-70f29787aa65faca2cbf20d354296030.jpg"
+                                alt="">
+                        </div>
+                    </div>
+
+                    <label for="delivery_time" id="start">Delivery time (date and time): </label>
+                    <input type="datetime-local" name="delivery_time" min="2010-06-12T00:00" max="2021-06-12T00:00"
+                        required>
+                    <label for="topping-choice">Select one additional topping</label>
+                    <select name="topping_id" style="margin-bottom:10px;">
+
+                        {% for topping in toppings %}
+                            <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
+                        {% endfor %}
+                    </select>
+                    <button>Order</button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{% url 'login_app:logout' %}">Logout</a>
+    </div>
+
+    <div class="img_container">
+
+    </div>
+</section>
+
+<style>
+    .profile-details-btn {
+        text-align: center;
+        margin: 0 auto;
+        display: block;
+        font-size: 10px;
+    }
+
+    .greeting-text {
+        text-align: center;
+    }
+
+    .pizzas-bg {
+        background-color: #FFFBF6;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    p {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .pizzas-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 40px;
+    }
+
+    .hero-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-img {
+        width: 70%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .hero-header {
+        font-size: 86px;
+        line-height: 90px;
+        font-family: 'Cardo', serif;
+        font-weight: 400;
+    }
+
+    .pizza-name {
+        font-family: 'Cardo', serif;
+        margin-bottom: 1rem;
+        font-weight: 400 !important;
+    }
+
+    .pizza-text {
+        color: #746b60;
+        line-height: 1.5em;
+        height: 3em;
+        overflow: hidden;
+
+        text-overflow: ellipsis !important;
+
+    }
+
+    .pizza-content {
+        display: grid;
+        grid-template-columns: 1fr 0.5fr;
+    }
+
+    .pizza-img {
+        width: 100%;
+    }
+
+    .pizza-img img {
+        width: 60%;
+        display: block;
+        margin-left: auto;
+
+    }
+
+    .user_page {
+        background-color: #FAF3EC;
+
+    }
+
+    .pizza-block {
+
+        padding: 20px;
+        border-bottom: 1px solid #746b605e;
+    }
+
+    .pizza-block:hover {
+        box-shadow: 10px 10px 25px rgba(0, 0, 0, .14);
+        transition: box-shadow .3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .pizza-block:hover .pizza-name {
+        text-decoration: underline;
+    }
+</style>
+
+
+</body>
+
+</html>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'login_app/base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div style="margin:0 auto; max-width:1000px;">
+  <h1>User profile</h1>
+  Hello, {{ user.username }}.
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="username" value="{{user.username}}" />
+  </form>
+  <ul class="user-list">
+    <li><b>Your phone number:</b> {{ userProfile.telephone }}</li>
+    <li><b>Your status:</b> {{ userProfile.user_status }}</li>
+
+  </ul>
+  <p>Orders</p>
+  <li>Order #1172 <a class="order-details" href="">View Details</a></li>
+  <li>Order #1173 <a class="order-details" href="">View Details</a></li>
+  <li>Order #1174 <a class="order-details" href="">View Details</a></li>
+  <li>Order #1182 <a class="order-details" href="">View Details</a></li>
+  <li>Order #1192 <a class="order-details" href="">View Details</a></li>
+</div>
+<style>
+  .order-details {
+    color: black;
+    font-size: 12px;
+    margin-left: 20px;
+    text-decoration: none;
+  }
+</style>
+</body>
+{% endblock %}
