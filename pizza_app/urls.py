@@ -20,4 +20,10 @@ urlpatterns = [
     path('api/v1/<int:pk>/', PizzaDetail.as_view()),
     path('edit_customers/', views.edit_customers, name='edit_customers'),
 
+    path('admin/orders', views.orders_page, name='orders_page'),
+    path('admin/orders/<int:pk>', views.single_order, name='single_order'),
+
+    path('accept_order', views.accept_order, name='accept_order'),
+    path('fulfill_order', views.fulfill_order, name='fulfill_order'),
+
 ]

@@ -1,0 +1,43 @@
+{% extends 'pizza_app/base.html' %}
+
+{% block title %}Pizza Express ~ Orders ~ Django{% endblock %}
+
+{% block content %}
+
+
+<section class="orders-page">
+<div>
+    Orders Page
+
+</div>
+
+<div style="display:grid; max-width:1000px; width:100%; margin: 0 auto;">
+
+
+<div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;  grid-row-gap:20px;">
+    <div>Order Id</div>
+    <div>Date</div>
+    <div>Customer</div>
+    <div>Total</div>
+    <div>Order Status</div>
+    <div></div>
+
+    {% for order in orders reversed %}
+    <div>{{ order.pk }}</div>
+    <div>{{ order.order_date_time}} </div>
+    <div>{{ order.customer }} </div>
+    <div>{{ order.total_price }} </div>
+    <div>{{order.order_status}} </div>
+    <a href="{% url 'pizza_app:single_order' order.pk %}">View Order</a href="">
+    {% endfor %}
+
+</div>
+
+
+
+
+</div>
+
+</section>
+
+{% endblock %}
