@@ -40,7 +40,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return f'{self.user}'
 
-
 class Pizza(models.Model):
     name = models.CharField(max_length=250)
     text = models.CharField(max_length=250)
@@ -73,6 +72,7 @@ class Pizza(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+
 class Topping(models.Model):
      item = models.CharField(max_length=64, unique=True, blank=False)
      price = models.IntegerField(default=0)
@@ -92,8 +92,8 @@ class Order(models.Model):
     total_price = models.IntegerField(default=0)
     order_status = models.CharField(
         choices=status, default='pending', max_length=250)
-    pizzas = models.CharField(max_length=250, default="Pepperoni")
     toppings = models.ManyToManyField(Topping, blank=True)
+    pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE)
 
     @classmethod
     def create(cls, delivery_date_time, pizza_id, pizza_name, pizza_price, customer, topping):
@@ -101,7 +101,7 @@ class Order(models.Model):
         order.delivery_date_time = delivery_date_time
         order.total_price = pizza_price
         order.customer = customer
-        order.pizzas = pizza_name
+        order.pizza = Pizza(pk=pizza_id)
         order.save()
         order.toppings.add(topping)
 
@@ -139,7 +139,9 @@ class Order(models.Model):
         print("Testing the print method. Order id: #" + str(self.pk))
 
     def __str__(self):
-        return f"Order #{self.pk} - Pizzas: {self.pizzas}"
+        return f"Order #{self.pk} "
+
+
 
 
 
