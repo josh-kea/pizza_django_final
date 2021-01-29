@@ -8,6 +8,8 @@ import random
 from .utils import is_pizza_employee
 from django.urls import reverse
 from django.shortcuts import redirect
+from .forms import PizzaForm
+from django.views.generic import CreateView
 
 # EMAILS
 import django_rq
@@ -76,16 +78,21 @@ def thank_you(request, pk):
 @login_required
 def employee_page(request):
     assert is_pizza_employee(request.user), 'Customer routed to employee view.'
-    if request.method == 'POST':
-        name = request.POST['pizza_name']
-        text = request.POST['pizza_text']
-        price = request.POST['pizza_price']
-        pizza = Pizza.create(name, text, price)
-    pizzas = Pizza.objects.all()
+    # if request.method == 'POST':
+    #     name = request.POST['pizza_name']
+    #     text = request.POST['pizza_text']
+    #     price = request.POST['pizza_price']
+    #     cover = request.POST['pizza_cover']
+    #     pizza = Pizza.create(name, text, price, cover)
     userProfiles = UserProfile.objects.filter(user=request.user)
+    pizzas = Pizza.objects.all()
+    form= PizzaForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save()
     context = {
         'pizzas': pizzas,
         'userProfiles': userProfiles,
+        'form': form,
     }
     return render(request, 'pizza_app/employee_page.html', context)
 
