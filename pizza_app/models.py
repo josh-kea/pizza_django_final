@@ -133,6 +133,20 @@ class Order(models.Model):
                 "text": data,
             },
         )
+
+        # Tell websocket to update status live 
+
+    def order_status_change(self):
+        channel_layer = get_channel_layer()
+        data = self.order_status
+        # Trigger message sent to group
+        async_to_sync(channel_layer.group_send)(
+            str("Order_Status_Group"),  # Group Name, Should always be string
+            {
+                "type": "update_status",   # Custom Function written in the consumers.py
+                "text": data,
+            },
+        )
         
 
     def send_order_confirmation_emails(self):
