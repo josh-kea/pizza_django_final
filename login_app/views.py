@@ -97,12 +97,11 @@ def signup(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
         email = request.POST['email']
-        telephone = request.POST['telephone_number']
 
         if password == confirm_password:
             # New try function, to try creating a new user via the userProfile @classmethod create_user . Remember inside this @classmethod we are creating the Django User object too.
             try:
-                UserProfile.create_user(username, password, email, telephone)
+                User.objects.create_user(username=username, password=password, email=email)
                 return HttpResponseRedirect(reverse('login_app:login'), context)
 
             # If the try fails then send context that we could not create a user account
