@@ -30,9 +30,11 @@
             <div class="pizzas-wrapper">
 
 
-                {% for pizza in pizzas %}
-                <form method="POST" class="pizza-block">
+
+                <form method="POST" >
                     {% csrf_token %}
+                    {% for pizza in pizzas %}
+                    <div class="pizza-block">
                     <input type="hidden" name="pizza_id" value="{{ pizza.pk }}" />
                     <input type="hidden" name="pizza_price" value="{{pizza.price}}" />
                     <input type="hidden" name="pizza_name" value="{{pizza.name}}" />
@@ -61,8 +63,10 @@
                         {% endfor %}
                     </select>
                     <button>Order</button>
+                    </div>
+                    {% endfor %}
                 </form>
-                {% endfor %}
+
             </div>
         </div>
         <a href="{% url 'login_app:logout' %}">Logout</a>

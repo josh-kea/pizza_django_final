@@ -13,7 +13,7 @@ from . messaging import email_message, admin_order_email, user_order_email
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
-    telephone = models.CharField(max_length=35)
+    telephone = models.CharField(max_length=35, default=None, blank=True, null=True)
     status = (
         ('employee', 'employee'),
         ('customer', 'customer')
@@ -21,21 +21,31 @@ class UserProfile(models.Model):
     user_status = models.CharField(
         choices=status, default='customer', max_length=250)
 
-    @classmethod
-    def create_user(cls, username, password, email, telephone) -> User:
-        user = None
-        # Creating a new Django user and also referencing this new user in a variable to be used later down when creating a user profile
-        user = User.objects.create_user(
-            username=username, password=password, email=email)
+    # @classmethod
+    # def create_user(cls, username, password, email, telephone) -> User:
+    #     user = None
+    #     # Creating a new Django user and also referencing this new user in a variable to be used later down when creating a user profile
+    #     user = User.objects.create_user(
+    #         username=username, password=password, email=email)
 
+    #     userProfile = cls()
+    #     userProfile.user = user
+    #     userProfile.telephone = telephone
+    #     # Hardcoded testing creating user with customer status so we can test further and improve
+    #     userProfile.user_status = "customer"
+    #     userProfile.save()
+
+    #     return user
+
+    @classmethod
+    def create_userprofile(cls, user):
+        # Creating a Django user profile whenever a user is created elsewhere
         userProfile = cls()
         userProfile.user = user
-        userProfile.telephone = telephone
-        # Hardcoded testing creating user with customer status so we can test further and improve
         userProfile.user_status = "customer"
         userProfile.save()
 
-        return user
+        return userProfile
 
     def __str__(self):
         return f'{self.user}'
@@ -120,6 +130,20 @@ class Order(models.Model):
             str("Notification_Group"),  # Group Name, Should always be string
             {
                 "type": "notify",   # Custom Function written in the consumers.py
+                "text": data,
+            },
+        )
+
+        # Tell websocket to update status live 
+
+    def order_status_change(self):
+        channel_layer = get_channel_layer()
+        data = self.order_status
+        # Trigger message sent to group
+        async_to_sync(channel_layer.group_send)(
+            str("Order_Status_Group"),  # Group Name, Should always be string
+            {
+                "type": "update_status",   # Custom Function written in the consumers.py
                 "text": data,
             },
         )

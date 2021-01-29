@@ -11,7 +11,12 @@
  <p>Thanks for placing an order with us! Your order will arrive at: {{ order.delivery_date_time}}</p>
  <p>Total paid: {{order.total_price}} kr</p>
 <h2>Order Status:</h2>
-<p style="color:#746b60;">{{order.order_status }}</p>
+<div class="order-status-wrapper">
+    <p style="color:#746b60;" id="OrderStatus">{{order.order_status }}</p>
+    <div class="order-status-image-container" style="max-width:500px; margin:0 auto;"> </div>
+    
+</div>
+
 <a class="home-btn" href="{% url 'pizza_app:customer_page' %}">Go back to home page</a>
 </div>
 
@@ -26,5 +31,73 @@
 
 </style>
 
+<script>
+    /* Connecting to notifications socket, same as routing.py in notifications folder ... */
+    const orderStatusSocket = new WebSocket(
+      'ws://'
+      + window.location.host
+      + '/ws/order_status/'
+    );
+
+    // Socket should be connected now, now we can run functions on the socket instance.
+
+    // Socket On receive message Functionality
+    orderStatusSocket.onmessage = function (e) {
+      console.log('message', e)
+      console.log(e.data) // Access the notification data
+      console.log("e.data" + e.data)
+
+    //   
+
+      const orderStatusText = document.querySelector("#OrderStatus");
+      orderStatusText.innerHTML = e.data;
+
+      const orderStatusContainer = document.querySelector(".order-status-wrapper");
+ 
+
+      let orderStatusImageDiv = document.querySelector(".order-status-image-container");
+
+      if (e.data == "Accepted") {
+        orderStatusImageDiv.innerHTML = "<img style='width:500px; display:block; margin:0 auto;'src='https://media.discordapp.net/attachments/753175043810394125/804660745978511390/pizza-delivery-man-running-with-pizza-box-2656098-2214905.png'>"
+      } 
+      
+      if (e.data == "Fulfilled") {
+        orderStatusImageDiv.innerHTML = "<img style='width:500px; display:block; margin:0 auto;' src='https://media.discordapp.net/attachments/753175043810394125/804670738140495912/316-3162181_united-kingdom-enjoy-your-meal-meal.png'>"
+        
+      }
+
+     
+
+
+
+    //   
+
+    //  
+
+
+    //   
+
+
+
+    }
+
+    // Socket Connet Functionality
+    orderStatusSocket.onopen = function (e) {
+      console.log('Order Status socket - open', e)
+      console.log('Socket is opened.')
+    }
+
+    // Socket Error Functionality
+    orderStatusSocket.onerror = function (e) {
+      console.log('Order Status socket - error', e)
+    }
+
+    // Socket close Functionality
+    orderStatusSocket.onclose = function (e) {
+      console.log('Order Status socket - closed', e)
+    }
+  </script>
+
 
 {% endblock %}
+

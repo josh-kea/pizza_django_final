@@ -184,18 +184,26 @@ def single_order(request, pk):
     return render(request, 'pizza_app/single_order.html', {"order":order})
 
 def accept_order(request):
-    order_pk = request.POST['order_pk']
-    order = get_object_or_404(Order, pk=order_pk)
-    order.order_status = "Accepted"
-    order.save()
+    if request.method == 'POST':
+        order_pk = request.POST['order_pk']
+        order = get_object_or_404(Order, pk=order_pk)
+        order.order_status = "Accepted"
+        order.save()
+
+        order.order_status_change()
+
+    
 
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+        
 
 def fulfill_order(request):
     order_pk = request.POST['order_pk']
     order = get_object_or_404(Order, pk=order_pk)
     order.order_status = "Fulfilled"
     order.save()
+
+    order.order_status_change()
 
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
