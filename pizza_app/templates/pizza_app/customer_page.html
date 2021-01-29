@@ -31,38 +31,37 @@
 
 
 
-                <form method="POST" >
+                <form method="POST">
                     {% csrf_token %}
                     {% for pizza in pizzas %}
                     <div class="pizza-block">
-                    <input type="hidden" name="pizza_id" value="{{ pizza.pk }}" />
-                    <input type="hidden" name="pizza_price" value="{{pizza.price}}" />
-                    <input type="hidden" name="pizza_name" value="{{pizza.name}}" />
+                        <input type="hidden" name="pizza_id" value="{{ pizza.pk }}" />
+                        <input type="hidden" name="pizza_price" value="{{pizza.price}}" />
+                        <input type="hidden" name="pizza_name" value="{{pizza.name}}" />
 
-                    <div class="pizza-content">
-                        <div>
-                            <h2 class="pizza-name">{{ pizza.name }}</h2>
-                            <p>{{ pizza.price }} kr.</p>
-                            <p class="pizza-text">{{ pizza.text }}</p>
+                        <div class="pizza-content">
+                            <div>
+                                <h2 class="pizza-name">{{ pizza.name }}</h2>
+                                <p>{{ pizza.price }} kr.</p>
+                                <p class="pizza-text">{{ pizza.text }}</p>
 
+                            </div>
+                            <div class="pizza-img">
+                                <img src="{{ pizza.cover.url }}" alt="{{ pizza.name }}">
+                            </div>
                         </div>
-                        <div class="pizza-img">
-                            <img src="//s3-eu-west-1.amazonaws.com/plantjammerbackend1/__sized__/pizzamexican-70f29787aa65faca2cbf20d354296030.jpg"
-                                alt="">
-                        </div>
-                    </div>
 
-                    <label for="delivery_time" id="start">Delivery time (date and time): </label>
-                    <input type="datetime-local" name="delivery_time" min="2010-06-12T00:00" max="2021-06-12T00:00"
-                        required>
-                    <label for="topping-choice">Select one additional topping</label>
-                    <select name="topping_id" style="margin-bottom:10px;">
+                        <label for="delivery_time" id="start">Delivery time (date and time): </label>
+                        <input type="datetime-local" name="delivery_time" min="2010-06-12T00:00" max="2021-06-12T00:00"
+                            required>
+                        <label for="topping-choice">Select one additional topping</label>
+                        <select name="topping_id" style="margin-bottom:10px;">
 
-                        {% for topping in toppings %}
-                        <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
-                        {% endfor %}
-                    </select>
-                    <button>Order</button>
+                            {% for topping in toppings %}
+                            <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
+                            {% endfor %}
+                        </select>
+                        <button>Order</button>
                     </div>
                     {% endfor %}
                 </form>

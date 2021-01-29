@@ -54,13 +54,16 @@ class Pizza(models.Model):
     name = models.CharField(max_length=250)
     text = models.CharField(max_length=250)
     price = models.IntegerField(default=0)
+    cover = models.ImageField(upload_to='images', default='default.jpg')
+
 
     @classmethod
-    def create(cls, name, text, price):
+    def create(cls, name, text, price, cover):
         pizza = cls()
         pizza.name = name
         pizza.text = text
         pizza.price = price
+        pizza.cover = cover
 
         pizza.create_pizza_notification()
         pizza.save()
