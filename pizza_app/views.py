@@ -33,8 +33,6 @@ def customer_page(request):
 
     order = Order.objects.filter(customer=request.user).last()
     if(order):
-        order = order
-        
         if(order.is_placed):
             order = Order.start_new_order(request.user)
             print("one order has already been placed, creating a new one")
