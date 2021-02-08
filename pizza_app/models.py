@@ -121,7 +121,6 @@ class Order(models.Model):
         # Using non class methods - rather methods on the instance that was created:
         order.create_order_notification()
         order.send_order_confirmation_emails()
-        order.test_print()
 
         return order
 
@@ -161,9 +160,6 @@ class Order(models.Model):
                'order_id' : str(self.pk),
                'email' : 'joshkap2015@gmail.com',
             })
-
-    def test_print(self):
-        print("Testing the print method. Order id: #" + str(self.pk))
 
     def __str__(self):
         return f"Order #{self.pk} "
