@@ -3,6 +3,7 @@ from django.core.mail import EmailMessage
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import pdfkit
 
 def email_message(message_dict):
    contents = f"""
@@ -48,6 +49,7 @@ def user_order_email(message_dict):
    # "myimage" unique
    body = MIMEText(f"<p><img src='cid:myimage' /> You successfully placed order #{message_dict['order_id']} today. See more details about your order here: http://127.0.0.1:8000/thank_you/{message_dict['order_id']}</p>", _subtype='html')
    html_part.attach(body)
+
 
    # Now create the MIME container for the image
    img = MIMEImage(img_data, 'jpeg')

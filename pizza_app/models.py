@@ -121,7 +121,6 @@ class Order(models.Model):
         # Using non class methods - rather methods on the instance that was created:
         order.create_order_notification()
         order.send_order_confirmation_emails()
-        order.test_print()
 
         return order
 
