@@ -22,22 +22,6 @@ class UserProfile(models.Model):
     user_status = models.CharField(
         choices=status, default='customer', max_length=250)
 
-    # @classmethod
-    # def create_user(cls, username, password, email, telephone) -> User:
-    #     user = None
-    #     # Creating a new Django user and also referencing this new user in a variable to be used later down when creating a user profile
-    #     user = User.objects.create_user(
-    #         username=username, password=password, email=email)
-
-    #     userProfile = cls()
-    #     userProfile.user = user
-    #     userProfile.telephone = telephone
-    #     # Hardcoded testing creating user with customer status so we can test further and improve
-    #     userProfile.user_status = "customer"
-    #     userProfile.save()
-
-    #     return user
-
     @classmethod
     def create_userprofile(cls, user):
         # Creating a Django user profile whenever a user is created elsewhere
@@ -73,29 +57,20 @@ class Pizza(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-class LineItem(models.Model):
-    item = models.ForeignKey(Pizza, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-    price = models.IntegerField(default=0)
-
-    @classmethod
-    def create(cls, pizza, quantity):
-        line_item = cls()
-        line_item.item = pizza
-        line_item.price = pizza.price
-        line_item.quantity = int(quantity)
-        line_item.save()
-        return line_item
-
-    def __str__(self):
-        return f"{self.quantity} of {self.item.name}"
-
 class Topping(models.Model):
      item = models.CharField(max_length=64, unique=True, blank=False)
      price = models.IntegerField(default=0)
 
      def __str__(self):
         return f'{self.item}'
+
+class LineItem(models.Model):
+    item = models.ForeignKey(Pizza, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(default=1)
+    line_item_order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, related_name='+')
+    
+    def __str__(self):
+        return f"{self.quantity}x {self.item.name}"
 
 class Order(models.Model):
     status = (
@@ -106,11 +81,11 @@ class Order(models.Model):
 
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     order_date_time = models.DateTimeField(auto_now_add=True)
-    total_price = models.IntegerField(default=0)
     order_status = models.CharField(
         choices=status, default='pending', max_length=250)
     # toppings = models.ManyToManyField(Topping, blank=True)
-    lineItems = models.ManyToManyField(LineItem, blank=True)
+    final_line_items = models.ManyToManyField(LineItem, blank=True)
+    total_price = models.IntegerField(default=0)
     line_items_total_quantity = models.IntegerField(default=0)
     is_placed = models.BooleanField(default=False)
 
@@ -134,20 +109,35 @@ class Order(models.Model):
 
         return self
 
-    def create_line_item(self, pizza_id, pizza_quantity):
+    def create_line_item(self, pizza_id, order):
         pizza = Pizza.objects.get(pk=pizza_id)
+        
+        # Checking to see if line item already exists to an order & pizza, if not, create a new instance.
+        line_item, created = LineItem.objects.get_or_create(item=pizza, line_item_order=order)
+        
+        if created:
+            self.final_line_items.add(line_item)
+            print(line_item)
+            print(line_item)
+            print(line_item)
+        else:
+            print(line_item)
+            line_item.quantity+=1
+            line_item.save()
+        
+        self.line_items_total_quantity = 0
+        self.total_price = 0
 
-        line_item = LineItem.create(pizza, pizza_quantity)
-
-        # print(pizza.price)
-        self.lineItems.add(line_item)
-
-        for item in self.lineItems.all():
-            self.total_price += item.price * item.quantity
-            self.line_items_total_quantity+= item.quantity
+        for final_line_item in self.final_line_items.all():
+            self.total_price+= final_line_item.item.price * final_line_item.quantity
+            self.line_items_total_quantity+= final_line_item.quantity
             self.save()
-	#	    for topping in pizza.toppings.all():
-	#       self.subtotal += topping.base_price
+
+    def clear_line_items(self):
+        self.final_line_items.all().delete()
+        self.line_items_total_quantity = 0
+        self.total_price = 0
+        self.save()
 
 
     def create_order_notification(self):

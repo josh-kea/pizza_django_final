@@ -40,11 +40,11 @@ def customer_page(request):
         order = Order.start_new_order(request.user)
         print("No order found, starting new order")
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'addBtn' in request.POST:
         pizza_id = request.POST['pizza_id']
         pizza_quantity = request.POST['pizza_quantity']
 
-        order.create_line_item(pizza_id, pizza_quantity)
+        order.create_line_item(pizza_id, order)
         context = {
             'toppings' : toppings,
             'pizzas': pizzas,
@@ -53,6 +53,25 @@ def customer_page(request):
         }  
         render(request, 'pizza_app/customer_page.html', context)               
         #return redirect('thank_you/'+ str(order.pk))
+    
+    if request.method == 'POST' and 'clearBtn' in request.POST:
+        order_id = request.POST['order_id']
+
+        order.clear_line_items()
+        context = {
+            'toppings' : toppings,
+            'pizzas': pizzas,
+            'userProfiles': userProfiles,
+            'order': order
+        }  
+        render(request, 'pizza_app/customer_page.html', context)               
+        #return redirect('thank_you/'+ str(order.pk))
+
+    if request.method == 'POST' and 'placeBtn' in request.POST:
+        order_id = request.POST['order_id']
+
+        return redirect('thank_you/'+ str(order.pk))              
+        
 
     context = {
         'toppings' : toppings,
@@ -85,13 +104,6 @@ def thank_you(request, pk):
 
 @login_required
 def employee_page(request):
-    # assert is_pizza_employee(request.user), 'Customer routed to employee view.'
-    # if request.method == 'POST':
-    #     name = request.POST['pizza_name']
-    #     text = request.POST['pizza_text']
-    #     price = request.POST['pizza_price']
-    #     cover = request.POST['pizza_cover']
-    #     pizza = Pizza.create(name, text, price, cover)
     userProfiles = UserProfile.objects.filter(user=request.user)
     pizzas = Pizza.objects.all()
     form= PizzaForm(request.POST or None, request.FILES or None)
@@ -226,10 +238,9 @@ def fulfill_order(request):
 
 def clear_order(request):
     order_id = request.POST['order_id']
-    print(order_id)
     order = get_object_or_404(Order, pk=order_id)
-    order.lineItems.clear()
-    
+    order.clear_line_items()
+
     return HttpResponseRedirect(reverse('pizza_app:customer_page'))
 
 def place_order(request):
