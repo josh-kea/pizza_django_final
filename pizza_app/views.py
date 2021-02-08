@@ -69,6 +69,7 @@ def customer_page(request):
 
     if request.method == 'POST' and 'placeBtn' in request.POST:
         order_id = request.POST['order_id']
+        order.place_order()
 
         return redirect('thank_you/'+ str(order.pk))              
         
