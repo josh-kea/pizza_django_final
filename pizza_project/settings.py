@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -85,10 +86,12 @@ RQ_QUEUES = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 #EMAIL_USE_SSL = True ### <--- DON'T USE THIS - USE EMAIL_USE_TLS
-EMAIL_HOST = 'smtp.zoho.eu'
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'joshua@ptd-cph.com'
-EMAIL_HOST_PASSWORD = '9ywN15asjmZL'
+EMAIL_HOST_USER = 'joshkap2015@gmail.com'
+EMAIL_HOST_PASSWORD = 'CYIJEhMxqRgkU9H3'
+
+
 
 # Setting up permissions and authorization settings for REST API
 REST_FRAMEWORK = {
@@ -159,6 +162,10 @@ DATABASES = {
     }
 }
 
+# Media
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 
 
