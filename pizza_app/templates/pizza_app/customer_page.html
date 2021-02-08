@@ -28,7 +28,7 @@
         </div>
         <div class="pizzas-bg">
             <div class="pizzas-wrapper">
-                <div> {{ order.pk }} Subtotal: {{ order.total_price}} </div>
+                
                    
                     {% for pizza in pizzas %}
                     <form method="POST">
@@ -59,12 +59,34 @@
                             <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
                             {% endfor %}
                         </select>
-                        <button>Add To Order</button>
+                        <div>Quantity:</div> 
+                        <div class="quantity-container" style="display:flex; align-items:center;">
+                            <input type="number" id="quantity" name="pizza_quantity" min="1" value="1"> 
+                        </div>
+
+                        <style>
+
+                            input[type=number]::-webkit-inner-spin-button {
+                                opacity: 1; /* shows Spin Buttons per default (Chrome >= 39) */
+                            }
+
+                            #quantity {
+                                width:40px;
+                            }
+                        </style>
+
+                        <button style="margin-top:20px; padding:10px 30px">Add To Order</button>
                     </div>
-                      
+                       
                     </form>
                     {% endfor %}
 
+                    <div> <b>Cart Total:</b> {{ order.line_items_total_quantity }} <b>Subtotal:</b> {{ order.total_price}} kr. </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button class="button" formaction="{% url 'pizza_app:clear_order' %}">Clear Cart</button>
+                    <input type="hidden" name="order_id" value="{{order.pk}}">
+                </form>
 
             </div>
         </div>
@@ -169,11 +191,6 @@
         border-bottom: 1px solid #746b605e;
     }
 
-    .pizza-block:hover {
-        box-shadow: 10px 10px 25px rgba(0, 0, 0, .14);
-        transition: box-shadow .3s ease-in-out;
-        cursor: pointer;
-    }
 
     .pizza-block:hover .pizza-name {
         text-decoration: underline;

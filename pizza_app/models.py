@@ -56,7 +56,6 @@ class Pizza(models.Model):
     text = models.CharField(max_length=250)
     price = models.IntegerField(default=0)
     cover = models.ImageField(upload_to='images', default='default.jpg')
-    quantity = models.IntegerField(default=1)
 
 
     @classmethod
@@ -73,6 +72,23 @@ class Pizza(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+class LineItem(models.Model):
+    item = models.ForeignKey(Pizza, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    price = models.IntegerField(default=0)
+
+    @classmethod
+    def create(cls, pizza, quantity):
+        line_item = cls()
+        line_item.item = pizza
+        line_item.price = pizza.price
+        line_item.quantity = int(quantity)
+        line_item.save()
+        return line_item
+
+    def __str__(self):
+        return f"{self.quantity} of {self.item.name}"
 
 class Topping(models.Model):
      item = models.CharField(max_length=64, unique=True, blank=False)
@@ -94,7 +110,8 @@ class Order(models.Model):
     order_status = models.CharField(
         choices=status, default='pending', max_length=250)
     # toppings = models.ManyToManyField(Topping, blank=True)
-    pizzas = models.ManyToManyField(Pizza, blank=True)
+    lineItems = models.ManyToManyField(LineItem, blank=True)
+    line_items_total_quantity = models.IntegerField(default=0)
     is_placed = models.BooleanField(default=False)
 
     @classmethod
@@ -118,14 +135,17 @@ class Order(models.Model):
 
         return order
 
-    def add_pizza_to_order(self, pizza_id):
+    def create_line_item(self, pizza_id, pizza_quantity):
         pizza = Pizza.objects.get(pk=pizza_id)
 
-        # print(pizza.price)
-        self.pizzas.add(pizza)
+        line_item = LineItem.create(pizza, pizza_quantity)
 
-        for pizza in self.pizzas.all():
-            self.total_price += pizza.price * pizza.quantity * 2
+        # print(pizza.price)
+        self.lineItems.add(line_item)
+
+        for item in self.lineItems.all():
+            self.total_price += item.price * item.quantity
+            self.line_items_total_quantity+= item.quantity
 	#	    for topping in pizza.toppings.all():
 	#       self.subtotal += topping.base_price
 
