@@ -162,9 +162,6 @@ class Order(models.Model):
                'email' : 'joshkap2015@gmail.com',
             })
 
-    def test_print(self):
-        print("Testing the print method. Order id: #" + str(self.pk))
-
     def __str__(self):
         return f"Order #{self.pk} "
 

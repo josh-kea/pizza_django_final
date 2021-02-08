@@ -46,7 +46,7 @@ def user_order_email(message_dict):
    # Create the body with HTML. Note that the image, since it is inline, is 
    # referenced with the URL cid:myimage... you should take care to make
    # "myimage" unique
-   body = MIMEText('<p>Hello <img src="cid:myimage" /></p>', _subtype='html')
+   body = MIMEText(f"<p><img src='cid:myimage' /> You successfully placed order #{message_dict['order_id']} today. See more details about your order here: http://127.0.0.1:8000/thank_you/{message_dict['order_id']}</p>", _subtype='html')
    html_part.attach(body)
 
    # Now create the MIME container for the image
@@ -58,7 +58,7 @@ def user_order_email(message_dict):
    # Configure and send an EmailMessage
    # Note we are passing None for the body (the 2nd parameter). You could pass plain text
    # to create an alternative part for this message
-   msg = EmailMessage(f"order #{message_dict['order_id']} placed", contents, 'joshpizzas@gmail.com', ['joshkap2015@gmail.com', 'ambertheil96@gmail.com'])
+   msg = EmailMessage(f"order #{message_dict['order_id']} placed", None, 'joshpizzas@ptd-cph.com', ['joshkap2015@gmail.com', 'ambertheil96@gmail.com'])
    msg.attach(html_part) # Attach the raw MIMEBase descendant. This is a public method on EmailMessage
    msg.send()
 
