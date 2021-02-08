@@ -2,6 +2,7 @@ from uuid import uuid4
 from django.contrib.auth.models import User
 from django.db import models
 import random, _datetime
+import uuid
 
 # CHANNELS FOR NOTIFICATION WHEN ORDER IS PLACED
 from channels.layers import get_channel_layer
@@ -55,6 +56,7 @@ class Pizza(models.Model):
     text = models.CharField(max_length=250)
     price = models.IntegerField(default=0)
     cover = models.ImageField(upload_to='images', default='default.jpg')
+    quantity = models.IntegerField(default=1)
 
 
     @classmethod
@@ -65,26 +67,12 @@ class Pizza(models.Model):
         pizza.price = price
         pizza.cover = cover
 
-        pizza.create_pizza_notification()
         pizza.save()
 
         return pizza
 
-    def create_pizza_notification(self):
-        channel_layer = get_channel_layer()
-        data = "Pizza "+ str(self.name) + " is created." # Pass any data based on your requirement
-        # Trigger message sent to group
-        async_to_sync(channel_layer.group_send)(
-            str("Notification_Group"),  # Group Name, Should always be string
-            {
-                "type": "notify",   # Custom Function written in the consumers.py
-                "text": data,
-            },
-        )
-
     def __str__(self):
         return f"{self.name}"
-
 
 class Topping(models.Model):
      item = models.CharField(max_length=64, unique=True, blank=False)
@@ -99,30 +87,48 @@ class Order(models.Model):
         ('delivering', 'delivering'),
         ('delivered', 'delivered'),
     )
+
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     order_date_time = models.DateTimeField(auto_now_add=True)
-    delivery_date_time = models.DateTimeField(default='20:00')
     total_price = models.IntegerField(default=0)
     order_status = models.CharField(
         choices=status, default='pending', max_length=250)
-    toppings = models.ManyToManyField(Topping, blank=True)
-    pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE)
+    # toppings = models.ManyToManyField(Topping, blank=True)
+    pizzas = models.ManyToManyField(Pizza, blank=True)
+    is_placed = models.BooleanField(default=False)
 
     @classmethod
-    def create(cls, delivery_date_time, pizza_id, pizza_name, pizza_price, customer, topping):
+    def start_new_order(cls, customer):
         order = cls()
-        order.delivery_date_time = delivery_date_time
-        order.total_price = pizza_price
         order.customer = customer
-        order.pizza = Pizza(pk=pizza_id)
+        order.is_placed = False
         order.save()
-        order.toppings.add(topping)
+
+        return order
+
+    def place_order(self):
+        order = cls()
+        order.is_placed = True
+        order.save()
+        # order.toppings.add(topping)
 
         # Using non class methods - rather methods on the instance that was created:
         order.create_order_notification()
         order.send_order_confirmation_emails()
 
         return order
+
+    def add_pizza_to_order(self, pizza_id):
+        pizza = Pizza.objects.get(pk=pizza_id)
+
+        # print(pizza.price)
+        self.pizzas.add(pizza)
+
+        for pizza in self.pizzas.all():
+            self.total_price += pizza.price * pizza.quantity * 2
+	#	    for topping in pizza.toppings.all():
+	#       self.subtotal += topping.base_price
+
 
     def create_order_notification(self):
         channel_layer = get_channel_layer()

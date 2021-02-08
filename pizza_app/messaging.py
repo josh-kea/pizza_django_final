@@ -3,7 +3,6 @@ from django.core.mail import EmailMessage
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import pdfkit
 
 def email_message(message_dict):
    contents = f"""

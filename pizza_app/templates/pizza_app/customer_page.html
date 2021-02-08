@@ -28,12 +28,11 @@
         </div>
         <div class="pizzas-bg">
             <div class="pizzas-wrapper">
-
-
-
-                <form method="POST">
-                    {% csrf_token %}
+                <div> {{ order.pk }} Subtotal: {{ order.total_price}} </div>
+                   
                     {% for pizza in pizzas %}
+                    <form method="POST">
+                        {% csrf_token %}
                     <div class="pizza-block">
                         <input type="hidden" name="pizza_id" value="{{ pizza.pk }}" />
                         <input type="hidden" name="pizza_price" value="{{pizza.price}}" />
@@ -52,8 +51,7 @@
                         </div>
 
                         <label for="delivery_time" id="start">Delivery time (date and time): </label>
-                        <input type="datetime-local" name="delivery_time" min="2010-06-12T00:00" max="2021-06-12T00:00"
-                            required>
+                        
                         <label for="topping-choice">Select one additional topping</label>
                         <select name="topping_id" style="margin-bottom:10px;">
 
@@ -61,10 +59,12 @@
                             <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
                             {% endfor %}
                         </select>
-                        <button>Order</button>
+                        <button>Add To Order</button>
                     </div>
+                      
+                    </form>
                     {% endfor %}
-                </form>
+
 
             </div>
         </div>

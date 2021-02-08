@@ -25,32 +25,45 @@ def index(request):
 
 @login_required
 def customer_page(request):
-    assert not is_pizza_employee(
-        request.user), 'Employee routed to customer view.'
+    # assert not is_pizza_employee(
+    #     request.user), 'Employee routed to customer view.'
     pizzas = Pizza.objects.all()
     userProfiles = UserProfile.objects.filter(user=request.user)
     toppings = Topping.objects.all()
+
+    order = Order.objects.filter(customer=request.user).last()
+    if(order):
+        print("order exists")
+        
+        if(order.is_placed):
+            order = Order.start_new_order(request.user)
+            print("one order has already been placed, creating a new one")
+        else:
+            order = order
+    else:
+        order = Order.start_new_order(request.user)
+        print("No order found, starting new order")
+
 
     context = {
         'toppings' : toppings,
         'pizzas': pizzas,
         'userProfiles': userProfiles,
+        'order': order,
     }
 
     if request.method == 'POST':
-        # delivery_date_time user must specify
-        delivery_date_time = request.POST['delivery_time']
         pizza_id = request.POST['pizza_id']
-        pizza_name = request.POST['pizza_name']
-        pizza_price = request.POST['pizza_price']
-        topping_id = request.POST['topping_id']
 
-        order = Order.create(delivery_date_time,
-                            pizza_id, pizza_name, pizza_price, request.user, topping_id)
+        order.add_pizza_to_order(pizza_id)
         context = {
+            'toppings' : toppings,
+            'pizzas': pizzas,
+            'userProfiles': userProfiles,
             'order': order
-        }                 
-        return redirect('thank_you/'+ str(order.pk))
+        }  
+        render(request, 'pizza_app/customer_page.html', context)               
+        #return redirect('thank_you/'+ str(order.pk))
 
     return render(request, 'pizza_app/customer_page.html', context)
 
@@ -77,7 +90,7 @@ def thank_you(request, pk):
 
 @login_required
 def employee_page(request):
-    assert is_pizza_employee(request.user), 'Customer routed to employee view.'
+    # assert is_pizza_employee(request.user), 'Customer routed to employee view.'
     # if request.method == 'POST':
     #     name = request.POST['pizza_name']
     #     text = request.POST['pizza_text']
