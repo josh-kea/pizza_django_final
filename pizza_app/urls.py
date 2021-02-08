@@ -16,6 +16,7 @@ urlpatterns = [
     path('delete_pizza/', views.delete_pizza, name='delete_pizza'),
     path('update_pizza/', views.update_pizza, name='update_pizza'),
 
+    path('place_order/', views.place_order, name='place_order'),
     path('clear_order/', views.clear_order, name='clear_order'),
     path('thank_you/<int:pk>/', views.thank_you, name='thank_you'),
     path('api/v1/', PizzaList.as_view()),

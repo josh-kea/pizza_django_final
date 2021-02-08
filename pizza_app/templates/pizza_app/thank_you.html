@@ -7,7 +7,11 @@
 
 <h1 class="order-number">Your order number: #{{ order.pk }}</h1>
 
-<p>Your <b>{{order.pizzas}}</b> is on the way!</p>
+{% for line_item in order.lineItems.all%}
+<div>{{line_item}}</div>
+{% endfor %}
+
+<p>Your <b>{{order.lineItems}}</b> is on the way!</p>
  <p>Thanks for placing an order with us! Your order will arrive in an hour.</p>
  <p>Total paid: {{order.total_price}} kr</p>
 <h2>Order Status:</h2>

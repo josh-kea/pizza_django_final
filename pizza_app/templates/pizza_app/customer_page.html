@@ -87,6 +87,11 @@
                     <button class="button" formaction="{% url 'pizza_app:clear_order' %}">Clear Cart</button>
                     <input type="hidden" name="order_id" value="{{order.pk}}">
                 </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button class="button" formaction="{% url 'pizza_app:place_order' %}">Place Order</button>
+                    <input type="hidden" name="order_id" value="{{order.pk}}">
+                </form>
 
             </div>
         </div>

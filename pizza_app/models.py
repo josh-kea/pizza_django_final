@@ -124,16 +124,15 @@ class Order(models.Model):
         return order
 
     def place_order(self):
-        order = cls()
-        order.is_placed = True
-        order.save()
+        self.is_placed = True
+        self.save()
         # order.toppings.add(topping)
 
         # Using non class methods - rather methods on the instance that was created:
-        order.create_order_notification()
-        order.send_order_confirmation_emails()
+        self.create_order_notification()
+        self.send_order_confirmation_emails()
 
-        return order
+        return self
 
     def create_line_item(self, pizza_id, pizza_quantity):
         pizza = Pizza.objects.get(pk=pizza_id)
@@ -146,6 +145,7 @@ class Order(models.Model):
         for item in self.lineItems.all():
             self.total_price += item.price * item.quantity
             self.line_items_total_quantity+= item.quantity
+            self.save()
 	#	    for topping in pizza.toppings.all():
 	#       self.subtotal += topping.base_price
 
@@ -188,7 +188,7 @@ class Order(models.Model):
             })
 
     def __str__(self):
-        return f"Order #{self.pk} "
+        return f"Order #{self.pk} {'Placed' if self.is_placed else 'Draft'}"
 
 
 

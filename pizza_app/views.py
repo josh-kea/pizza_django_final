@@ -224,7 +224,6 @@ def fulfill_order(request):
 
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
-# Update Pizza
 
 
 def clear_order(request):
@@ -235,4 +234,10 @@ def clear_order(request):
     
     return HttpResponseRedirect(reverse('pizza_app:customer_page'))
 
-# Update Pizza
+def place_order(request):
+    order_id = request.POST['order_id']
+    order = get_object_or_404(Order, pk=order_id)
+    order.place_order()
+    
+    #return HttpResponseRedirect(reverse('pizza_app:thank_you/' +str(order.pk)))
+    return redirect('http://127.0.0.1:8000/thank_you/'+ str(order.pk))
