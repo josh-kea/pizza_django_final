@@ -22,10 +22,6 @@
     <form action="." method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
-      <!-- <input type="text" placeholder="Name" name="pizza_name" />
-      <input type="text" placeholder="Text" name="pizza_text" />
-      <input type="number" placeholder="Price" name="pizza_price" />
-      <input type="file" name="pizza_cover" accept="image/*"> -->
       <br>
       <input type="submit" value="Upload" />
     </form>

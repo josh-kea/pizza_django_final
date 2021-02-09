@@ -25,11 +25,16 @@
 
     </div>
    <div>
-       <div style="display:flex; height:50px; border:1px solid black; justify-content:space-between;">
-           <img src="{% static 'pizza_app/img/ingredients.png' %}" alt="">
+       <div style="display:flex; padding: 40px 50px; border:0.1rem solid silver; justify-content:space-between; background-color:white; border-radius:10px;">
+           <img src="{% static 'pizza_app/img/ingredients.png' %}" style="height:50px; width: 50px;" alt="">
            <div>
                <p>{{order.pizzas}}</p>
            </div>
+           <div>
+               {% for line_item in order.final_line_items.all %}
+                <p style="margin: 10px auto;">{{ line_item }}</p>
+                {% endfor %}
+            </div>
            <div>
                 <p>{{order.total_price}}kr.</p>
             </div>

@@ -8,21 +8,14 @@
 
 <form method="POST">
 
-
     {% for customer in customers %}
-    <h2>Helloooooo {{ customer.username }}. {{ customer.email }}
+    <h2>Hello {{ customer.username }}. {{ customer.email }}
         {% for profile in profiles %}
         {{ profile.user_status }}</h2>
     {% endfor %}
-    {% endfor %}
-
 
 </form>
 <hr />
 <a href="{% url 'pizza_app:employee_page' %}">Home</a>
 
-
-</body>
-
-</html>
 {% endblock %}

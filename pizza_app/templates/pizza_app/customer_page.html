@@ -6,8 +6,6 @@
 <section class="user_page">
     {% csrf_token %}
     <div class="menu_container">
-        <h1 style="text-align:center;">{{ order.pk}}</h1>
-
         {% load static %}
 
         <p class="greeting-text">Hello <b>{{ user.username }}</b> ({{ user_profile.user_status }})</p>
@@ -48,16 +46,28 @@
                                 <img src="{{ pizza.cover.url }}" alt="{{ pizza.name }}">
                             </div>
                         </div>
-
-                        <label for="delivery_time" id="start">Delivery time (date and time): </label>
                         
-                        <label for="topping-choice">Select one additional topping</label>
-                        <select name="topping_id" style="margin-bottom:10px;">
-
+                        <label for="topping-choice">Additional toppings</label>
+                        <div style="display:flex; justify-content:space-between;">
                             {% for topping in toppings %}
-                            <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
+                            <label style="font-size:12px;">
+                                <input type="checkbox" id="{{ topping.pk }}" name="{{ topping.pk }}" value="unchecked" onchange="changeValue(this)">
+                                {{ topping.item }} - {{ topping.price }} kr.
+    
+                            </label>
                             {% endfor %}
-                        </select>
+                            <script>
+                                function changeValue(e) {
+                                    if(e.value === "checked") {
+                                        e.value = "unchecked"
+                                        console.log(e.value)
+                                    } else if (e.value === "unchecked"){
+                                        e.value = "checked"
+                                        console.log(e.value)
+                                    }
+                                }
+                            </script>
+                        </div>
                         <div>Quantity:</div> 
                         <div class="quantity-container" style="display:flex; align-items:center;">
                             <input type="number" id="quantity" name="pizza_quantity" min="1" value="1"> 
@@ -201,8 +211,4 @@
     }
 </style>
 
-
-</body>
-
-</html>
 {% endblock %}

@@ -15,19 +15,13 @@ import django_rq
 from . messaging import email_message
 
 def login(request):
-
-    # if(request.user):
-    #     if(User.objects.get(user=request.user)):
-    #         return HttpResponseRedirect(reverse('pizza_app:customer_page'))
-
     context={}
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        userProfile = UserProfile.objects.get(user=user) # Finds user profile and references in variable to be used below
+        userProfile = UserProfile.objects.get(user=user)
 
-        # If a user is matched
         if user: 
             if userProfile.isEmployee:
                 dj_login(request, user)
@@ -66,7 +60,6 @@ def password_reset(request):
                'token' : prr.secret,
                'email' : prr.user.email,
             })
-            print(f"Secret sent to {prr.user.email} ??")
             return HttpResponseRedirect(reverse('login_app:password_reset'))
     
     return render(request, 'login_app/password_reset.html')
@@ -105,21 +98,13 @@ def signup(request):
         email = request.POST['email']
 
         if password == confirm_password:
-            # New try function, to try creating a new user via the userProfile @classmethod create_user . Remember inside this @classmethod we are creating the Django User object too.
             try:
                 User.objects.create_user(username=username, password=password, email=email)
                 return HttpResponseRedirect(reverse('login_app:login'), context)
-
-            # If the try fails then send context that we could not create a user account
+                
             except IntegrityError:
                 context['error'] = 'Could not create user account.'
         else:
             # If passwords do not match.
             context = {'error': 'Passwords do not match.'}
     return render(request, 'login_app/signup.html', context)
-
-
-
-
-def delete_account(request):
-    pass
