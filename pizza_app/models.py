@@ -46,6 +46,15 @@ class Pizza(models.Model):
 
         return pizza
 
+    def update_pizza(self, name, text, price):
+        self.name = name
+        self.text = text
+        self.price = price
+
+        self.save()
+
+        return self
+
     def __str__(self):
         return f"{self.name}"
 
