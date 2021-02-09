@@ -15,12 +15,7 @@ from . messaging import email_message, admin_order_email, user_order_email
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     telephone = models.CharField(max_length=35, default=None, blank=True, null=True)
-    status = (
-        ('employee', 'employee'),
-        ('customer', 'customer')
-    )
-    user_status = models.CharField(
-        choices=status, default='customer', max_length=250)
+    isEmployee = models.BooleanField(default=False)
 
     @classmethod
     def create_userprofile(cls, user):
@@ -171,6 +166,7 @@ class Order(models.Model):
         django_rq.enqueue(admin_order_email, {
                'order_id' : str(self.pk),
                'email' : 'joshkap2015@gmail.com',
+               'order': self
             })
         django_rq.enqueue(user_order_email, {
                'order_id' : str(self.pk),

@@ -18,16 +18,14 @@
   </div>
   <nav class="topnav">
     <h1 class="shop-name">Pizza Express</h1>
-    {% for userProfile in userProfiles %}
-    {% if user.is_authenticated and userProfile.user_status == 'employee' %}
-    <a class="btn" href="{% url 'pizza_app:employee_page' %}">Home</a>
-    <a class="btn" href="{% url 'pizza_app:edit_customers' %}">Edit Customer Profiles</a>
-    <a class="nav-link2" href="{% url 'login_app:logout' %}">Log out <span data-feather="log-out"></a>
-    {% elif user.is_authenticated and userProfile.user_status == 'customer' %}
-    <a class="btn" href="{% url 'pizza_app:customer_page' %}">Home</a>
-    <a class="nav-link2" href="{% url 'login_app:logout' %}">Log out <span data-feather="log-out"></a>
+    {% if user.is_authenticated and user_profile.isEmployee %}
+      <a class="btn" href="{% url 'pizza_app:employee_page' %}">Home</a>
+      <a class="btn" href="{% url 'pizza_app:edit_customers' %}">Edit Customer Profiles</a>
+      <a class="nav-link2" href="{% url 'login_app:logout' %}">Log out <span data-feather="log-out"></a>
+    {% elif user.is_authenticated and user_profile.isEmployee == False %}
+      <a class="btn" href="{% url 'pizza_app:customer_page' %}">Home</a>
+      <a class="nav-link2" href="{% url 'login_app:logout' %}">Log out <span data-feather="log-out"></a>
     {% endif %}
-    {% endfor %}
 
     {% comment %}
     Notifications div to be appended to by notifications
@@ -45,8 +43,8 @@
     </div>
 
     {% if user.is_not_authenticated %}
-    <a class="nav-link2" href="{% url 'login_app:login' %}">Login <span data-feather="log-in"></a>
-    <a class="btn" href="{% url 'login_app:signup' %}">Sign up</a>
+      <a class="nav-link2" href="{% url 'login_app:login' %}">Login <span data-feather="log-in"></a>
+      <a class="btn" href="{% url 'login_app:signup' %}">Sign up</a>
     {% endif %}
 
   </nav>

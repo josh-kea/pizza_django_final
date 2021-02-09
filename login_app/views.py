@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from . import models
 from .models import PasswordResetRequest
@@ -14,7 +15,12 @@ import django_rq
 from . messaging import email_message
 
 def login(request):
-    context = {}
+
+    # if(request.user):
+    #     if(User.objects.get(user=request.user)):
+    #         return HttpResponseRedirect(reverse('pizza_app:customer_page'))
+
+    context={}
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -23,12 +29,12 @@ def login(request):
 
         # If a user is matched
         if user: 
-            if userProfile.user_status != 'employee':
-                dj_login(request, user)
-                return HttpResponseRedirect(reverse('pizza_app:customer_page')) # new
-            elif UserProfile.user_status != 'customer':
+            if userProfile.isEmployee:
                 dj_login(request, user)
                 return HttpResponseRedirect(reverse('pizza_app:employee_page')) # new
+            elif userProfile.isEmployee == False:
+                dj_login(request, user)
+                return HttpResponseRedirect(reverse('pizza_app:customer_page')) # new
         else:
             context = {'error': 'Bad username or password.'}
     return render(request, 'login_app/login.html', context)

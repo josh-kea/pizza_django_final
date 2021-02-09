@@ -10,11 +10,9 @@
 
         {% load static %}
 
-        {% for userProfile in userProfiles %}
-        <p class="greeting-text">Hello <b>{{ user.username }}</b> ({{ userProfile.user_status }})</p>
+        <p class="greeting-text">Hello <b>{{ user.username }}</b> ({{ user_profile.user_status }})</p>
         <a class="profile-details-btn" style="color:black;" href="{% url 'pizza_app:user_profile' %}"
             style="color:white !important">View Profile Details</a>
-        {% endfor%}
 
         <form action="">
 

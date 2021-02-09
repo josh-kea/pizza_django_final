@@ -3,18 +3,16 @@
 {% block title %}Edit pizza{% endblock %}
 
 {% block content %}
-{% for userProfile in userProfiles %}
-{% if userProfile.user_status == "employee" %}
 
 <section class="employe_page">
 
   {% load static %}
 
-  {% for userProfile in userProfiles %}
-  <p class="greeting-text">Hello <b>{{ user.username }}</b> ({{ userProfile.user_status }})</p>
+
+  <p class="greeting-text">Hello <b>{{ user.username }}</b></p>
   <a class="profile-details-btn" style="color:black;" href="{% url 'pizza_app:user_profile' %}"
     style="color:white !important">View Profile Details</a>
-  {% endfor%}
+
 
 
   <!-- CREATE NEW PIZZA -->
@@ -65,9 +63,4 @@
   }
 </style>
 
-{% else %}
-
-<p>Not employee</p>
-{% endif %}
-{% endfor %}
 {% endblock %}
