@@ -25,33 +25,61 @@ def index(request):
 
 @login_required
 def customer_page(request):
-    assert not is_pizza_employee(
-        request.user), 'Employee routed to customer view.'
+    # assert not is_pizza_employee(
+    #     request.user), 'Employee routed to customer view.'
     pizzas = Pizza.objects.all()
     userProfiles = UserProfile.objects.filter(user=request.user)
     toppings = Topping.objects.all()
+
+    order = Order.objects.filter(customer=request.user).last()
+    if(order):
+        if(order.is_placed):
+            order = Order.start_new_order(request.user)
+            print("one order has already been placed, creating a new one")
+    else:
+        order = Order.start_new_order(request.user)
+        print("No order found, starting new order")
+
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        pizza_id = request.POST['pizza_id']
+        pizza_quantity = request.POST['pizza_quantity']
+
+        order.create_line_item(pizza_id, order)
+        context = {
+            'toppings' : toppings,
+            'pizzas': pizzas,
+            'userProfiles': userProfiles,
+            'order': order
+        }  
+        render(request, 'pizza_app/customer_page.html', context)               
+        #return redirect('thank_you/'+ str(order.pk))
+    
+    if request.method == 'POST' and 'clearBtn' in request.POST:
+        order_id = request.POST['order_id']
+
+        order.clear_line_items()
+        context = {
+            'toppings' : toppings,
+            'pizzas': pizzas,
+            'userProfiles': userProfiles,
+            'order': order
+        }  
+        render(request, 'pizza_app/customer_page.html', context)               
+        #return redirect('thank_you/'+ str(order.pk))
+
+    if request.method == 'POST' and 'placeBtn' in request.POST:
+        order_id = request.POST['order_id']
+        order.place_order()
+
+        return redirect('thank_you/'+ str(order.pk))              
+        
 
     context = {
         'toppings' : toppings,
         'pizzas': pizzas,
         'userProfiles': userProfiles,
+        'order': order,
     }
-
-    if request.method == 'POST':
-        # delivery_date_time user must specify
-        delivery_date_time = request.POST['delivery_time']
-        pizza_id = request.POST['pizza_id']
-        pizza_name = request.POST['pizza_name']
-        pizza_price = request.POST['pizza_price']
-        topping_id = request.POST['topping_id']
-
-        order = Order.create(delivery_date_time,
-                            pizza_id, pizza_name, pizza_price, request.user, topping_id)
-        context = {
-            'order': order
-        }                 
-        return redirect('thank_you/'+ str(order.pk))
-
     return render(request, 'pizza_app/customer_page.html', context)
 
 
@@ -77,13 +105,6 @@ def thank_you(request, pk):
 
 @login_required
 def employee_page(request):
-    assert is_pizza_employee(request.user), 'Customer routed to employee view.'
-    # if request.method == 'POST':
-    #     name = request.POST['pizza_name']
-    #     text = request.POST['pizza_text']
-    #     price = request.POST['pizza_price']
-    #     cover = request.POST['pizza_cover']
-    #     pizza = Pizza.create(name, text, price, cover)
     userProfiles = UserProfile.objects.filter(user=request.user)
     pizzas = Pizza.objects.all()
     form= PizzaForm(request.POST or None, request.FILES or None)
@@ -120,7 +141,7 @@ def edit_pizza(request, pk):
 
 def delete_pizza(request):
     pizza_id = request.POST['pizza_id']
-    pizza = get_object_or_404(Pizza, pizza_id=pizza_id)
+    pizza = get_object_or_404(Pizza, pk=pizza_id)
     pizza.delete()
 
     return HttpResponseRedirect(reverse('pizza_app:employee_page'))
@@ -130,7 +151,7 @@ def delete_pizza(request):
 
 def update_pizza(request):
     pizza_id = request.POST['pizza_id']
-    pizza = get_object_or_404(Pizza, pizza_id=pizza_id)
+    pizza = get_object_or_404(Pizza, pk=pizza_id)
     price = request.POST['pizza_price']
     text = request.POST['pizza_text']
     name = request.POST['pizza_name']
@@ -214,4 +235,19 @@ def fulfill_order(request):
 
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
-# Update Pizza
+
+
+def clear_order(request):
+    order_id = request.POST['order_id']
+    order = get_object_or_404(Order, pk=order_id)
+    order.clear_line_items()
+
+    return HttpResponseRedirect(reverse('pizza_app:customer_page'))
+
+def place_order(request):
+    order_id = request.POST['order_id']
+    order = get_object_or_404(Order, pk=order_id)
+    order.place_order()
+    
+    #return HttpResponseRedirect(reverse('pizza_app:thank_you/' +str(order.pk)))
+    return redirect('http://127.0.0.1:8000/thank_you/'+ str(order.pk))

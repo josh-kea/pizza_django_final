@@ -2,6 +2,7 @@ from uuid import uuid4
 from django.contrib.auth.models import User
 from django.db import models
 import random, _datetime
+import uuid
 
 # CHANNELS FOR NOTIFICATION WHEN ORDER IS PLACED
 from channels.layers import get_channel_layer
@@ -20,22 +21,6 @@ class UserProfile(models.Model):
     )
     user_status = models.CharField(
         choices=status, default='customer', max_length=250)
-
-    # @classmethod
-    # def create_user(cls, username, password, email, telephone) -> User:
-    #     user = None
-    #     # Creating a new Django user and also referencing this new user in a variable to be used later down when creating a user profile
-    #     user = User.objects.create_user(
-    #         username=username, password=password, email=email)
-
-    #     userProfile = cls()
-    #     userProfile.user = user
-    #     userProfile.telephone = telephone
-    #     # Hardcoded testing creating user with customer status so we can test further and improve
-    #     userProfile.user_status = "customer"
-    #     userProfile.save()
-
-    #     return user
 
     @classmethod
     def create_userprofile(cls, user):
@@ -65,26 +50,12 @@ class Pizza(models.Model):
         pizza.price = price
         pizza.cover = cover
 
-        pizza.create_pizza_notification()
         pizza.save()
 
         return pizza
 
-    def create_pizza_notification(self):
-        channel_layer = get_channel_layer()
-        data = "Pizza "+ str(self.name) + " is created." # Pass any data based on your requirement
-        # Trigger message sent to group
-        async_to_sync(channel_layer.group_send)(
-            str("Notification_Group"),  # Group Name, Should always be string
-            {
-                "type": "notify",   # Custom Function written in the consumers.py
-                "text": data,
-            },
-        )
-
     def __str__(self):
         return f"{self.name}"
-
 
 class Topping(models.Model):
      item = models.CharField(max_length=64, unique=True, blank=False)
@@ -93,36 +64,81 @@ class Topping(models.Model):
      def __str__(self):
         return f'{self.item}'
 
+class LineItem(models.Model):
+    item = models.ForeignKey(Pizza, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(default=1)
+    line_item_order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, related_name='+')
+    
+    def __str__(self):
+        return f"{self.quantity}x {self.item.name}"
+
 class Order(models.Model):
     status = (
         ('pending', 'pending'),
         ('delivering', 'delivering'),
         ('delivered', 'delivered'),
     )
+
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     order_date_time = models.DateTimeField(auto_now_add=True)
-    delivery_date_time = models.DateTimeField(default='20:00')
-    total_price = models.IntegerField(default=0)
     order_status = models.CharField(
         choices=status, default='pending', max_length=250)
-    toppings = models.ManyToManyField(Topping, blank=True)
-    pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE)
+    # toppings = models.ManyToManyField(Topping, blank=True)
+    final_line_items = models.ManyToManyField(LineItem, blank=True)
+    total_price = models.IntegerField(default=0)
+    line_items_total_quantity = models.IntegerField(default=0)
+    is_placed = models.BooleanField(default=False)
 
     @classmethod
-    def create(cls, delivery_date_time, pizza_id, pizza_name, pizza_price, customer, topping):
+    def start_new_order(cls, customer):
         order = cls()
-        order.delivery_date_time = delivery_date_time
-        order.total_price = pizza_price
         order.customer = customer
-        order.pizza = Pizza(pk=pizza_id)
+        order.is_placed = False
         order.save()
-        order.toppings.add(topping)
-
-        # Using non class methods - rather methods on the instance that was created:
-        order.create_order_notification()
-        order.send_order_confirmation_emails()
 
         return order
+
+    def place_order(self):
+        self.is_placed = True
+        self.save()
+        # order.toppings.add(topping)
+
+        # Using non class methods - rather methods on the instance that was created:
+        self.create_order_notification()
+        self.send_order_confirmation_emails()
+
+        return self
+
+    def create_line_item(self, pizza_id, order):
+        pizza = Pizza.objects.get(pk=pizza_id)
+        
+        # Checking to see if line item already exists to an order & pizza, if not, create a new instance.
+        line_item, created = LineItem.objects.get_or_create(item=pizza, line_item_order=order)
+        
+        if created:
+            self.final_line_items.add(line_item)
+            print(line_item)
+            print(line_item)
+            print(line_item)
+        else:
+            print(line_item)
+            line_item.quantity+=1
+            line_item.save()
+        
+        self.line_items_total_quantity = 0
+        self.total_price = 0
+
+        for final_line_item in self.final_line_items.all():
+            self.total_price+= final_line_item.item.price * final_line_item.quantity
+            self.line_items_total_quantity+= final_line_item.quantity
+            self.save()
+
+    def clear_line_items(self):
+        self.final_line_items.all().delete()
+        self.line_items_total_quantity = 0
+        self.total_price = 0
+        self.save()
+
 
     def create_order_notification(self):
         channel_layer = get_channel_layer()
@@ -162,7 +178,7 @@ class Order(models.Model):
             })
 
     def __str__(self):
-        return f"Order #{self.pk} "
+        return f"Order #{self.pk} {'Placed' if self.is_placed else 'Draft'}"
 
 
 

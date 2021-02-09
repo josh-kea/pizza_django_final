@@ -9,7 +9,7 @@
 
   <form method="POST">
     {% csrf_token %}
-    <input type="hidden" name="pizza_id" value="{{pizza.pizza_id}}" placeholder="{{pizza.pizza_id}}" />
+    <input type="hidden" name="pizza_id" value="{{pizza.pk}}" placeholder="{{pizza.pk}}" />
     <label for="lname">Pizza name:</label><br>
     <input type="text" name="pizza_name" value="{{pizza.name}}" placeholder="{{pizza.name}}" /> <br>
     <label for="lname">Pizza description:</label><br>
@@ -20,7 +20,7 @@
     <button class="button" formaction="{% url 'pizza_app:delete_pizza' %}">Delete pizza</button>
     <button class="button" formaction="{% url 'pizza_app:update_pizza' %}">Update pizza</button>
 
-    <input type="hidden" name="pizza_id" value="{{pizza.pizza_id}}">
+    <input type="hidden" name="pizza_id" value="{{pizza.pk}}">
 
   </form>
   <hr />

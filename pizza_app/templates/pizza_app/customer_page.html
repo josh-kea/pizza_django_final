@@ -6,6 +6,7 @@
 <section class="user_page">
     {% csrf_token %}
     <div class="menu_container">
+        <h1 style="text-align:center;">{{ order.pk}}</h1>
 
         {% load static %}
 
@@ -28,12 +29,11 @@
         </div>
         <div class="pizzas-bg">
             <div class="pizzas-wrapper">
-
-
-
-                <form method="POST">
-                    {% csrf_token %}
+                
+                   
                     {% for pizza in pizzas %}
+                    <form method="POST">
+                        {% csrf_token %}
                     <div class="pizza-block">
                         <input type="hidden" name="pizza_id" value="{{ pizza.pk }}" />
                         <input type="hidden" name="pizza_price" value="{{pizza.price}}" />
@@ -52,8 +52,7 @@
                         </div>
 
                         <label for="delivery_time" id="start">Delivery time (date and time): </label>
-                        <input type="datetime-local" name="delivery_time" min="2010-06-12T00:00" max="2021-06-12T00:00"
-                            required>
+                        
                         <label for="topping-choice">Select one additional topping</label>
                         <select name="topping_id" style="margin-bottom:10px;">
 
@@ -61,9 +60,38 @@
                             <option value="{{ topping.pk }}"> {{ topping.item }} - {{ topping.price }} kr.</option>
                             {% endfor %}
                         </select>
-                        <button>Order</button>
+                        <div>Quantity:</div> 
+                        <div class="quantity-container" style="display:flex; align-items:center;">
+                            <input type="number" id="quantity" name="pizza_quantity" min="1" value="1"> 
+                        </div>
+
+                        <style>
+
+                            input[type=number]::-webkit-inner-spin-button {
+                                opacity: 1; /* shows Spin Buttons per default (Chrome >= 39) */
+                            }
+
+                            #quantity {
+                                width:40px;
+                            }
+                        </style>
+
+                        <button style="margin-top:20px; padding:10px 30px" name="addBtn">Add To Order</button>
                     </div>
+                       
+                    </form>
                     {% endfor %}
+
+                    <div> <b>Cart Total:</b> {{ order.line_items_total_quantity }} <b>Subtotal:</b> {{ order.total_price}} kr. </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="button" name="clearBtn">Clear Cart</button>
+                        <input type="hidden" name="order_id" value="{{order.pk}}">
+                    </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button class="button" name="placeBtn">Place Order</button>
+                    <input type="hidden" name="order_id" value="{{order.pk}}">
                 </form>
 
             </div>
@@ -169,11 +197,6 @@
         border-bottom: 1px solid #746b605e;
     }
 
-    .pizza-block:hover {
-        box-shadow: 10px 10px 25px rgba(0, 0, 0, .14);
-        transition: box-shadow .3s ease-in-out;
-        cursor: pointer;
-    }
 
     .pizza-block:hover .pizza-name {
         text-decoration: underline;

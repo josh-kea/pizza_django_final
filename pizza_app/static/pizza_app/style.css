@@ -202,11 +202,7 @@ padding:20px;
 border-bottom:1px solid #746b605e;
 }
 
-.pizza-block:hover {
-box-shadow: 10px 10px 25px rgba(0,0,0,.14);
-transition: box-shadow .3s ease-in-out;
-cursor:pointer;
-}
+
 
 .pizza-block:hover .pizza-name {
 text-decoration:underline;
