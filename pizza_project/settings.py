@@ -122,6 +122,7 @@ IPFILTER_MIDDLEWARE = {
 
 MIDDLEWARE = [
     'pizza_app.middleware.IPFilterMiddleware',
+     # Use only in production 'pizza_app.middleware.SSLifyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

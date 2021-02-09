@@ -63,6 +63,8 @@ class LineItem(models.Model):
     item = models.ForeignKey(Pizza, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(default=1)
     line_item_order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, related_name='+')
+
+    line_topping = models.ManyToManyField(Topping, blank=True)
     
     def __str__(self):
         return f"{self.quantity}x {self.item.name}"

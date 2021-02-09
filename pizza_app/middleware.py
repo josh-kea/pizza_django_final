@@ -1,5 +1,6 @@
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
+from django.http import HttpResponsePermanentRedirect
 
 class IPFilterMiddleware:   
 
@@ -27,5 +28,13 @@ class IPFilterMiddleware:
 
       return response
 
+#Unused until in production
+class SSLifyMiddleware(object):
+    """Force all requests to use HTTPs. If we get an HTTP request, we'll just
+    force a redirect to HTTPs."""
+
+    def process_request(self, request):
+        secure_url = url.replace('http://', 'https://')
+        return HttpResponsePermanentRedirect(secure_url)
 
 

@@ -22,8 +22,6 @@ def isEmployee(user):
     user_profile = UserProfile.objects.get(user=user)
     return user_profile.isEmployee
 
-
-
 @login_required
 @employee_required(login_url="/customer_page")
 def index(request):
