@@ -88,8 +88,8 @@ EMAIL_USE_TLS = True
 #EMAIL_USE_SSL = True ### <--- DON'T USE THIS - USE EMAIL_USE_TLS
 EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'joshkap2015@gmail.com'
-EMAIL_HOST_PASSWORD = 'CYIJEhMxqRgkU9H3'
+EMAIL_HOST_USER = 'ambertheil96@gmail.com'
+EMAIL_HOST_PASSWORD = 'z9bOpgHvLTJC48hX'
 
 
 

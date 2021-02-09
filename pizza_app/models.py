@@ -171,6 +171,7 @@ class Order(models.Model):
         django_rq.enqueue(admin_order_email, {
                'order_id' : str(self.pk),
                'email' : 'joshkap2015@gmail.com',
+               'order': self
             })
         django_rq.enqueue(user_order_email, {
                'order_id' : str(self.pk),
