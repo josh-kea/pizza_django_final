@@ -5,7 +5,6 @@ from .models import UserProfile, Pizza, Order, Topping
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 import random
-from .utils import is_pizza_employee
 from django.urls import reverse
 from django.shortcuts import redirect
 from .forms import PizzaForm
@@ -13,7 +12,6 @@ from django.views.generic import CreateView
 
 # EMAILS
 import django_rq
-from . messaging import email_message
 
 def employee_required(login_url=None):
     return user_passes_test(isEmployee, login_url=login_url)
@@ -27,11 +25,8 @@ def isEmployee(user):
 def index(request):
         return HttpResponseRedirect(reverse('pizza_app:employee_page'))
 
-
 @login_required
 def customer_page(request):
-    # assert not is_pizza_employee(
-    #     request.user), 'Employee routed to customer view.'
     pizzas = Pizza.objects.all()
     user_profile = UserProfile.objects.get(user=request.user)
     toppings = Topping.objects.all()
@@ -57,7 +52,6 @@ def customer_page(request):
             'order': order
         }  
         render(request, 'pizza_app/customer_page.html', context)               
-        #return redirect('thank_you/'+ str(order.pk))
     
     if request.method == 'POST' and 'clearBtn' in request.POST:
         order_id = request.POST['order_id']
@@ -70,7 +64,6 @@ def customer_page(request):
             'order': order
         }  
         render(request, 'pizza_app/customer_page.html', context)               
-        #return redirect('thank_you/'+ str(order.pk))
 
     if request.method == 'POST' and 'placeBtn' in request.POST:
         order_id = request.POST['order_id']
@@ -78,7 +71,6 @@ def customer_page(request):
 
         return redirect('thank_you/'+ str(order.pk))              
         
-
     context = {
         'toppings' : toppings,
         'pizzas': pizzas,
@@ -91,7 +83,6 @@ def customer_page(request):
 @login_required
 def user_profile(request):
     if request.method == 'GET':
-        # Getting only a single user profile object to pass through in the context, instead of an array which has to be looped through
         userProfile = UserProfile.objects.get(user=request.user)
         context = {
             'userProfile': userProfile,
@@ -112,11 +103,12 @@ def thank_you(request, pk):
 @employee_required(login_url="/customer_page")
 def employee_page(request):
     user_profile = UserProfile.objects.get(user=request.user)
-    
     pizzas = Pizza.objects.all()
     form= PizzaForm(request.POST or None, request.FILES or None)
+
     if form.is_valid():
         form.save()
+
     context = {
         'pizzas': pizzas,
         'user_profile': user_profile,
@@ -132,8 +124,6 @@ def base(request):
     }
     return render(request, 'pizza_app/base.html', context)
 
-
-# edit PIZZA page
 @login_required
 @employee_required(login_url="/customer_page")
 def edit_pizza(request, pk):
@@ -143,18 +133,12 @@ def edit_pizza(request, pk):
     }
     return render(request, 'pizza_app/edit_pizza.html', context)
 
-# Delete PIZZA
-
-
 def delete_pizza(request):
     pizza_id = request.POST['pizza_id']
     pizza = get_object_or_404(Pizza, pk=pizza_id)
     pizza.delete()
 
     return HttpResponseRedirect(reverse('pizza_app:employee_page'))
-
-# Update Pizza
-
 
 def update_pizza(request):
     pizza_id = request.POST['pizza_id']
@@ -169,9 +153,6 @@ def update_pizza(request):
 
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
-
-# CREATE ORDER
-
 @login_required
 @employee_required(login_url="/customer_page")
 def edit_customers(request):
@@ -184,7 +165,7 @@ def edit_customers(request):
     return render(request, 'pizza_app/edit_customers.html', context)
 
 
-# Admin/Orders Page
+# Admin/orders
 @login_required
 @employee_required(login_url="/customer_page")
 def orders_page(request):

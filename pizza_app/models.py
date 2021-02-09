@@ -10,7 +10,7 @@ from asgiref.sync import async_to_sync
 
 # DJANGO RQ FOR EMAIL WHEN ORDER IS PLACED
 import django_rq
-from . messaging import email_message, admin_order_email, user_order_email
+from . messaging import admin_order_email, user_order_email
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
@@ -18,11 +18,9 @@ class UserProfile(models.Model):
     isEmployee = models.BooleanField(default=False)
 
     @classmethod
-    def create_userprofile(cls, user):
-        # Creating a Django user profile whenever a user is created elsewhere
+    def create_userprofile(cls, user): # For signals
         userProfile = cls()
         userProfile.user = user
-        userProfile.user_status = "customer"
         userProfile.save()
 
         return userProfile
@@ -35,7 +33,6 @@ class Pizza(models.Model):
     text = models.CharField(max_length=250)
     price = models.IntegerField(default=0)
     cover = models.ImageField(upload_to='images', default='default.jpg')
-
 
     @classmethod
     def create(cls, name, text, price, cover):
@@ -63,8 +60,6 @@ class LineItem(models.Model):
     item = models.ForeignKey(Pizza, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(default=1)
     line_item_order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, related_name='+')
-
-    line_topping = models.ManyToManyField(Topping, blank=True)
     
     def __str__(self):
         return f"{self.quantity}x {self.item.name}"
@@ -80,7 +75,6 @@ class Order(models.Model):
     order_date_time = models.DateTimeField(auto_now_add=True)
     order_status = models.CharField(
         choices=status, default='pending', max_length=250)
-    # toppings = models.ManyToManyField(Topping, blank=True)
     final_line_items = models.ManyToManyField(LineItem, blank=True)
     total_price = models.IntegerField(default=0)
     line_items_total_quantity = models.IntegerField(default=0)
@@ -98,9 +92,7 @@ class Order(models.Model):
     def place_order(self):
         self.is_placed = True
         self.save()
-        # order.toppings.add(topping)
 
-        # Using non class methods - rather methods on the instance that was created:
         self.create_order_notification()
         self.send_order_confirmation_emails()
 
@@ -109,16 +101,11 @@ class Order(models.Model):
     def create_line_item(self, pizza_id, order):
         pizza = Pizza.objects.get(pk=pizza_id)
         
-        # Checking to see if line item already exists to an order & pizza, if not, create a new instance.
         line_item, created = LineItem.objects.get_or_create(item=pizza, line_item_order=order)
         
         if created:
             self.final_line_items.add(line_item)
-            print(line_item)
-            print(line_item)
-            print(line_item)
         else:
-            print(line_item)
             line_item.quantity+=1
             line_item.save()
         
@@ -139,30 +126,27 @@ class Order(models.Model):
 
     def create_order_notification(self):
         channel_layer = get_channel_layer()
-        data = "Order #"+ str(self.pk) + " placed." # Pass any data based on your requirement
-        # Trigger message sent to group
+        data = "Order #"+ str(self.pk) + " placed."
+
         async_to_sync(channel_layer.group_send)(
-            str("Notification_Group"),  # Group Name, Should always be string
+            str("Notification_Group"),
             {
-                "type": "notify",   # Custom Function written in the consumers.py
+                "type": "notify",
                 "text": data,
             },
         )
-
-        # Tell websocket to update status live 
 
     def order_status_change(self):
         channel_layer = get_channel_layer()
         data = self.order_status
-        # Trigger message sent to group
+
         async_to_sync(channel_layer.group_send)(
-            str("Order_Status_Group"),  # Group Name, Should always be string
+            str("Order_Status_Group"), 
             {
-                "type": "update_status",   # Custom Function written in the consumers.py
+                "type": "update_status",
                 "text": data,
             },
-        )
-        
+        ) 
 
     def send_order_confirmation_emails(self):
         django_rq.enqueue(admin_order_email, {

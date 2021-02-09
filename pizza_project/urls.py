@@ -22,7 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pizza_app.urls')),
     path('accounts/', include('login_app.urls')),
-    path('notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG: # new

@@ -6,8 +6,6 @@
 <section class="user_page">
     {% csrf_token %}
     <div class="menu_container">
-        <h1 style="text-align:center;">{{ order.pk}}</h1>
-
         {% load static %}
 
         <p class="greeting-text">Hello <b>{{ user.username }}</b> ({{ user_profile.user_status }})</p>
@@ -213,8 +211,4 @@
     }
 </style>
 
-
-</body>
-
-</html>
 {% endblock %}
