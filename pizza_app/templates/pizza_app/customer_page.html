@@ -51,24 +51,24 @@
                         
                         <label for="topping-choice">Additional toppings</label>
                         <div style="display:flex; justify-content:space-between;">
-                        {% for topping in toppings %}
-                        <label style="font-size:12px;">
-                            <input type="checkbox" id="{{ topping.pk }}" name="{{ topping.pk }}" value="unchecked" onchange="changeValue(this)">
-                            {{ topping.item }} - {{ topping.price }} kr.
-
-                        </label>
-                        {% endfor %}
-                        <script>
-                            function changeValue(e) {
-                                if(e.value === "checked") {
-                                    e.value = "unchecked"
-                                    console.log(e.value)
-                                } else if (e.value === "unchecked"){
-                                    e.value = "checked"
-                                    console.log(e.value)
+                            {% for topping in toppings %}
+                            <label style="font-size:12px;">
+                                <input type="checkbox" id="{{ topping.pk }}" name="{{ topping.pk }}" value="unchecked" onchange="changeValue(this)">
+                                {{ topping.item }} - {{ topping.price }} kr.
+    
+                            </label>
+                            {% endfor %}
+                            <script>
+                                function changeValue(e) {
+                                    if(e.value === "checked") {
+                                        e.value = "unchecked"
+                                        console.log(e.value)
+                                    } else if (e.value === "unchecked"){
+                                        e.value = "checked"
+                                        console.log(e.value)
+                                    }
                                 }
-                            }
-                        </script>
+                            </script>
                         </div>
                         <div>Quantity:</div> 
                         <div class="quantity-container" style="display:flex; align-items:center;">
