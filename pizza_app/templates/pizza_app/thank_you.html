@@ -7,11 +7,15 @@
 
 <h1 class="order-number">Your order number: #{{ order.pk }}</h1>
 
-{% for line_item in order.lineItems.all%}
-<div>{{line_item}}</div>
-{% endfor %}
+<div style="background-color:white; border-radius:20px; border:0.1rem solid silver; max-width:300px; width:100%; margin:0 auto;">
+  <div style="padding:20px; font-size:24px; font-weight:500; border-bottom:0.1rem solid silver;">Order Summary</div>
+{% for line_item in order.final_line_items.all %}
 
-<p>Your <b>{{order.lineItems}}</b> is on the way!</p>
+  <div style="padding:20px;">{{line_item}}</div>
+
+{% endfor %}
+</div>
+
  <p>Thanks for placing an order with us! Your order will arrive in an hour.</p>
  <p>Total paid: {{order.total_price}} kr</p>
 <h2>Order Status:</h2>
